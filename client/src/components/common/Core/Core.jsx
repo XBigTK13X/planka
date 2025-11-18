@@ -76,19 +76,6 @@ const Core = React.memo(() => {
 
   let messageNode = null;
   if (isSocketDisconnected) {
-    messageNode = (
-      <Message
-        type="error"
-        header={t('common.noConnectionToServer')}
-        content={
-          <Trans i18nKey="common.allChangesWillBeAutomaticallySavedAfterConnectionRestored">
-            All changes will be automatically saved
-            <br />
-            after connection restored
-          </Trans>
-        }
-      />
-    );
   } else if (isNewVersionAvailable) {
     messageNode = (
       <Message

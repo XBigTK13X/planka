@@ -150,6 +150,26 @@ const Filters = React.memo(() => {
   return (
     <>
       <span className={styles.filter}>
+        <Input
+          ref={handleSearchFieldRef}
+          value={search}
+          placeholder={t('common.searchCards')}
+          maxLength={128}
+          icon={
+            isSearchActive ? (
+              <Icon link name="cancel" onClick={handleCancelSearchClick} />
+            ) : (
+              'search'
+            )
+          }
+          className={classNames(styles.search, !isSearchActive && styles.searchInactive)}
+          onFocus={handleSearchFocus}
+          onKeyDown={handleSearchKeyDown}
+          onChange={handleSearchChange}
+          onBlur={handleSearchBlur}
+        />
+      </span>
+      <span className={styles.filter}>
         <BoardMembershipsPopup
           currentUserIds={userIds}
           title="common.filterByMembers"
@@ -191,26 +211,6 @@ const Filters = React.memo(() => {
             <LabelChip id={labelId} size="small" onClick={handleLabelClick} />
           </span>
         ))}
-      </span>
-      <span className={styles.filter}>
-        <Input
-          ref={handleSearchFieldRef}
-          value={search}
-          placeholder={t('common.searchCards')}
-          maxLength={128}
-          icon={
-            isSearchActive ? (
-              <Icon link name="cancel" onClick={handleCancelSearchClick} />
-            ) : (
-              'search'
-            )
-          }
-          className={classNames(styles.search, !isSearchActive && styles.searchInactive)}
-          onFocus={handleSearchFocus}
-          onKeyDown={handleSearchKeyDown}
-          onChange={handleSearchChange}
-          onBlur={handleSearchBlur}
-        />
       </span>
     </>
   );

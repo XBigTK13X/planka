@@ -15,6 +15,7 @@ import BoardMemberships from '../../board-memberships/BoardMemberships';
 import styles from './BoardActions.module.scss';
 
 const BoardActions = React.memo(() => {
+  const isSocketDisconnected = useSelector(selectors.selectIsSocketDisconnected);
   const withMemberships = useSelector((state) => {
     const boardMemberships = selectors.selectMembershipsForCurrentBoard(state);
 
@@ -25,20 +26,30 @@ const BoardActions = React.memo(() => {
     return selectors.selectIsCurrentUserManagerForCurrentProject(state);
   });
 
+  let disconnected = null
+  if(isSocketDisconnected){
+    disconnected = (
+      <div className={styles.action}>
+          <span>DISCONNECTED</span>
+        </div>
+    )
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.actions}>
-        {withMemberships && (
-          <div className={styles.action}>
-            <BoardMemberships />
-          </div>
-        )}
+        {disconnected}
         <div className={styles.action}>
           <Filters />
         </div>
         <div className={classNames(styles.action, styles.actionRightSide)}>
           <RightSide />
         </div>
+        {withMemberships && (
+          <div className={styles.action}>
+            <BoardMemberships />
+          </div>
+        )}
       </div>
     </div>
   );
