@@ -71,6 +71,11 @@ export const ListTypes = {
   TRASH: 'trash',
 };
 
+export const ListTypeStates = {
+  OPENED: 'opened',
+  CLOSED: 'closed',
+};
+
 export const ListSortFieldNames = {
   NAME: 'name',
   DUE_DATE: 'dueDate',
@@ -100,6 +105,7 @@ export const NotificationTypes = {
   MOVE_CARD: 'moveCard',
   COMMENT_CARD: 'commentCard',
   ADD_MEMBER_TO_CARD: 'addMemberToCard',
+  MENTION_IN_COMMENT: 'mentionInComment',
 };
 
 export const NotificationServiceFormats = {

@@ -16,7 +16,7 @@ import { usePopupInClosableContext } from '../../../hooks';
 import { isListArchiveOrTrash } from '../../../utils/record-helpers';
 import { AttachmentTypes, BoardMembershipRoles } from '../../../constants/Enums';
 import EditStep from './EditStep';
-import Favicon from './Favicon';
+import Favicon from '../../common/Favicon';
 import TimeAgo from '../../common/TimeAgo';
 
 import styles from './ItemContent.module.scss';
@@ -53,6 +53,19 @@ const ItemContent = React.forwardRef(({ id, onOpen }, ref) => {
       window.open(attachment.data.url, '_blank');
     }
   }, [onOpen, attachment.data]);
+
+  const handleDownloadClick = useCallback(
+    (event) => {
+      event.stopPropagation();
+
+      const linkElement = document.createElement('a');
+      linkElement.href = attachment.data.url;
+      linkElement.download = attachment.data.filename;
+      linkElement.target = '_blank';
+      linkElement.click();
+    },
+    [attachment.data],
+  );
 
   const handleToggleCoverClick = useCallback(
     (event) => {
@@ -114,25 +127,35 @@ const ItemContent = React.forwardRef(({ id, onOpen }, ref) => {
         <span className={styles.information}>
           <TimeAgo date={attachment.createdAt} />
         </span>
-        {attachment.type === AttachmentTypes.FILE && attachment.data.image && canEdit && (
+        {attachment.type === AttachmentTypes.FILE && (
           <span className={styles.options}>
-            <button type="button" className={styles.option} onClick={handleToggleCoverClick}>
-              <Icon
-                name="window maximize outline"
-                flipped="vertically"
-                size="small"
-                className={styles.optionIcon}
-              />
+            <button type="button" className={styles.option} onClick={handleDownloadClick}>
+              <Icon name="download" size="small" className={styles.optionIcon} />
               <span className={styles.optionText}>
-                {isCover
-                  ? t('action.removeCover', {
-                      context: 'title',
-                    })
-                  : t('action.makeCover', {
-                      context: 'title',
-                    })}
+                {t('action.download', {
+                  context: 'title',
+                })}
               </span>
             </button>
+            {attachment.data.image && canEdit && (
+              <button type="button" className={styles.option} onClick={handleToggleCoverClick}>
+                <Icon
+                  name="window maximize outline"
+                  flipped="vertically"
+                  size="small"
+                  className={styles.optionIcon}
+                />
+                <span className={styles.optionText}>
+                  {isCover
+                    ? t('action.removeCover', {
+                        context: 'title',
+                      })
+                    : t('action.makeCover', {
+                        context: 'title',
+                      })}
+                </span>
+              </button>
+            )}
           </span>
         )}
       </div>

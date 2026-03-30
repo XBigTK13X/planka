@@ -2,6 +2,8 @@ export default {
   translation: {
     common: {
       activeUsersLimitReached: 'Osiągnięto limit aktywnych użytkowników',
+      adminLoginRequiredToInitializeInstance:
+        'Wymagane logowanie administratora do inicjalizacji instancji',
       emailAlreadyInUse: 'E-mail jest już używany',
       emailOrUsername: 'E-mail lub nazwa użytkownika',
       invalidCredentials: 'Błędne dane logowania',
@@ -12,14 +14,20 @@ export default {
       or: 'Lub',
       pageNotFound_title: 'Strona nie znaleziona',
       password: 'Hasło',
-      poweredByPlanka: 'Powered by PLANKA',
+      poweredByPlanka: 'Powered by <1>PLANKA</1>',
       serverConnectionFailed: 'Błąd połączenia z serwerem',
       unknownError: 'Nieznany błąd, spróbuj ponownie później',
-      usernameAlreadyInUse: 'Nazwa użytkownika nie jest dostępna',
       useSingleSignOn: 'Użyj logowania SSO',
+      usernameAlreadyInUse: 'Nazwa użytkownika nie jest dostępna',
+      whoops_title: 'Ups!',
     },
 
     action: {
+      cancelAndClose: 'Anuluj i zamknij',
+      continue: 'Kontynuuj',
+      debugSso: 'Debuguj SSO',
+      goBack: 'Wróć',
+      goHome: 'Idź do domu',
       logIn: 'Zaloguj',
       logInWithSso: 'Zaloguj z SSO',
     },

@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Button, Divider, Dropdown, Header, Tab } from 'semantic-ui-react';
 
+import selectors from '../../../../selectors';
+import entryActions from '../../../../entry-actions';
 import { usePopupInClosableContext } from '../../../../hooks';
 import locales from '../../../../locales';
 import EditAvatarStep from './EditAvatarStep';
@@ -16,9 +18,6 @@ import EditUserUsernameStep from '../../EditUserUsernameStep';
 import EditUserEmailStep from '../../EditUserEmailStep';
 import EditUserPasswordStep from '../../EditUserPasswordStep';
 import UserAvatar from '../../UserAvatar';
-
-import selectors from '../../../../selectors';
-import entryActions from '../../../../entry-actions';
 
 import styles from './AccountPane.module.scss';
 
@@ -30,8 +29,7 @@ const AccountPane = React.memo(() => {
 
   const handleLanguageChange = useCallback(
     (_, { value }) => {
-      // FIXME: hack
-      dispatch(entryActions.updateCurrentUserLanguage(value === 'auto' ? null : value));
+      dispatch(entryActions.updateCurrentUserLanguage(value));
     },
     [dispatch],
   );
@@ -63,18 +61,12 @@ const AccountPane = React.memo(() => {
       <Dropdown
         fluid
         selection
-        options={[
-          {
-            value: 'auto',
-            text: t('common.detectAutomatically'),
-          },
-          ...locales.map((locale) => ({
-            value: locale.language,
-            flag: locale.country,
-            text: locale.name,
-          })),
-        ]}
-        value={user.language || 'auto'}
+        options={locales.map((locale) => ({
+          value: locale.language,
+          flag: locale.country,
+          text: locale.name,
+        }))}
+        value={user.language}
         onChange={handleLanguageChange}
       />
       {(isUsernameEditable || isEmailEditable || isPasswordEditable) && (
@@ -88,7 +80,7 @@ const AccountPane = React.memo(() => {
           </Divider>
           {isUsernameEditable && (
             <div className={styles.action}>
-              <EditUserUsernamePopup id={user.id} withPasswordConfirmation={!user.isSsoUser}>
+              <EditUserUsernamePopup id={user.id}>
                 <Button className={styles.actionButton}>
                   {t('action.editUsername', {
                     context: 'title',
@@ -99,7 +91,7 @@ const AccountPane = React.memo(() => {
           )}
           {isEmailEditable && (
             <div className={styles.action}>
-              <EditUserEmailPopup id={user.id} withPasswordConfirmation={!user.isSsoUser}>
+              <EditUserEmailPopup id={user.id}>
                 <Button className={styles.actionButton}>
                   {t('action.editEmail', {
                     context: 'title',
@@ -110,7 +102,7 @@ const AccountPane = React.memo(() => {
           )}
           {isPasswordEditable && (
             <div className={styles.action}>
-              <EditUserPasswordPopup id={user.id} withPasswordConfirmation={!user.isSsoUser}>
+              <EditUserPasswordPopup id={user.id}>
                 <Button className={styles.actionButton}>
                   {t('action.editPassword', {
                     context: 'title',
