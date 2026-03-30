@@ -494,7 +494,7 @@ const StoryContent = React.memo(() => {
                 )}
               </div>
             </div>
-            {(canUseMembers || canUseLabels || canAddAttachment || canAddCustomFieldGroup) && (
+            {(canUseLabels || canAddAttachment) && (
               <div className={styles.actions}>
                 <span className={styles.actionsTitle}>{t('action.addToCard')}</span>
                 {canUseLabels && (
@@ -517,28 +517,6 @@ const StoryContent = React.memo(() => {
                       {t('common.attachment')}
                     </Button>
                   </AddAttachmentPopup>
-                )}
-                {canAddCustomFieldGroup && (
-                  <AddCustomFieldGroupPopup onCreate={handleCustomFieldGroupCreate}>
-                    <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="sticky note outline" className={styles.actionIcon} />
-                      {t('common.customField', {
-                        context: 'title',
-                      })}
-                    </Button>
-                  </AddCustomFieldGroupPopup>
-                )}
-                {canUseMembers && (
-                  <BoardMembershipsPopup
-                    currentUserIds={userIds}
-                    onUserSelect={handleUserSelect}
-                    onUserDeselect={handleUserDeselect}
-                  >
-                    <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="user outline" className={styles.actionIcon} />
-                      {t('common.members')}
-                    </Button>
-                  </BoardMembershipsPopup>
                 )}
               </div>
             )}

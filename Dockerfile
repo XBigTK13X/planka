@@ -2,14 +2,13 @@
 FROM node:22-alpine AS server
 
 RUN apk -U upgrade \
-  && apk add build-base python3 --no-cache
+  && apk add --no-cache bash python3 squid make g++ gcc git
 
 WORKDIR /app
 
 COPY server .
 
-RUN npm install npm --global \
-  && npm install \
+RUN npm install \
   && npm run build \
   && npm prune --production
 
@@ -20,16 +19,14 @@ WORKDIR /app
 
 COPY client .
 
-RUN npm install npm --global \
-  && npm install --omit=dev \
+RUN npm install --omit=dev \
   && INDEX_FORMAT=ejs DISABLE_ESLINT_PLUGIN=true npm run build
 
 # Stage 3: Final image
 FROM node:22-alpine
 
 RUN apk -U upgrade \
-  && apk add bash python3 squid --no-cache \
-  && npm install npm --global
+  && apk add --no-cache bash python3 squid
 
 USER node
 WORKDIR /app
@@ -39,7 +36,6 @@ COPY --chown=node:node ["LICENSES/PLANKA Community License DE.md", "LICENSE_DE.m
 
 COPY --from=server --chown=node:node /app/node_modules node_modules
 COPY --from=server --chown=node:node /app/dist .
-
 COPY --from=client --chown=node:node /app/dist public
 
 RUN python3 -m venv .venv \

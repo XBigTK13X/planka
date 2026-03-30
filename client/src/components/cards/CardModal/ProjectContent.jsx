@@ -580,49 +580,6 @@ const ProjectContent = React.memo(() => {
               canAddCustomFieldGroup) && (
               <div className={styles.actions}>
                 <span className={styles.actionsTitle}>{t('action.addToCard')}</span>
-                {canUseMembers && (
-                  <BoardMembershipsPopup
-                    currentUserIds={userIds}
-                    onUserSelect={handleUserSelect}
-                    onUserDeselect={handleUserDeselect}
-                  >
-                    <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="user outline" className={styles.actionIcon} />
-                      {t('common.members')}
-                    </Button>
-                  </BoardMembershipsPopup>
-                )}
-                {canUseLabels && (
-                  <LabelsPopup
-                    currentIds={labelIds}
-                    cardId={card.id}
-                    onSelect={handleLabelSelect}
-                    onDeselect={handleLabelDeselect}
-                  >
-                    <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="bookmark outline" className={styles.actionIcon} />
-                      {t('common.labels')}
-                    </Button>
-                  </LabelsPopup>
-                )}
-                {canEditDueDate && (
-                  <EditDueDatePopup cardId={card.id}>
-                    <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="calendar check outline" className={styles.actionIcon} />
-                      {t('common.dueDate', {
-                        context: 'title',
-                      })}
-                    </Button>
-                  </EditDueDatePopup>
-                )}
-                {canEditStopwatch && (
-                  <EditStopwatchPopup cardId={card.id}>
-                    <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="clock outline" className={styles.actionIcon} />
-                      {t('common.stopwatch')}
-                    </Button>
-                  </EditStopwatchPopup>
-                )}
                 {canAddTaskList && (
                   <AddTaskListPopup>
                     <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
@@ -641,15 +598,18 @@ const ProjectContent = React.memo(() => {
                     </Button>
                   </AddAttachmentPopup>
                 )}
-                {canAddCustomFieldGroup && (
-                  <AddCustomFieldGroupPopup onCreate={handleCustomFieldGroupCreate}>
+                {canUseLabels && (
+                  <LabelsPopup
+                    currentIds={labelIds}
+                    cardId={card.id}
+                    onSelect={handleLabelSelect}
+                    onDeselect={handleLabelDeselect}
+                  >
                     <Button fluid className={classNames(styles.actionButton, styles.hidable)}>
-                      <Icon name="sticky note outline" className={styles.actionIcon} />
-                      {t('common.customField', {
-                        context: 'title',
-                      })}
+                      <Icon name="bookmark outline" className={styles.actionIcon} />
+                      {t('common.labels')}
                     </Button>
-                  </AddCustomFieldGroupPopup>
+                  </LabelsPopup>
                 )}
               </div>
             )}
@@ -663,42 +623,6 @@ const ProjectContent = React.memo(() => {
               canDelete) && (
               <div className={styles.actions}>
                 <span className={styles.actionsTitle}>{t('common.actions')}</span>
-                {canJoin && (
-                  <Button
-                    fluid
-                    className={classNames(styles.actionButton, styles.hidable)}
-                    onClick={handleToggleJointClick}
-                  >
-                    <Icon
-                      name={isJoined ? 'flag outline' : 'flag checkered'}
-                      className={styles.actionIcon}
-                    />
-                    {isJoined ? t('action.leave') : t('action.join')}
-                  </Button>
-                )}
-                {canSubscribe && (
-                  <Button
-                    fluid
-                    disabled={board.isSubscribed}
-                    className={classNames(styles.actionButton, styles.hidable)}
-                    onClick={handleToggleSubscriptionClick}
-                  >
-                    {board.isSubscribed ? (
-                      <>
-                        <Icon name="bell slash outline" className={styles.actionIcon} />
-                        {t('common.boardSubscribed')}
-                      </>
-                    ) : (
-                      <>
-                        <Icon
-                          name={card.isSubscribed ? 'bell slash outline' : 'bell outline'}
-                          className={styles.actionIcon}
-                        />
-                        {card.isSubscribed ? t('action.unsubscribe') : t('action.subscribe')}
-                      </>
-                    )}
-                  </Button>
-                )}
                 {canRestore && (isInArchiveList || isInTrashList) && (
                   <Button
                     fluid

@@ -396,42 +396,10 @@ const CardActionsStep = React.memo(({ cardId, defaultStep, onNameEdit, onClose }
       </Popup.Header>
       <Popup.Content>
         <Menu secondary vertical className={styles.menu}>
-          {card.type === CardTypes.PROJECT && canUseMembers && (
-            <Menu.Item className={styles.menuItem} onClick={handleMembersClick}>
-              <Icon name="user outline" className={styles.menuItemIcon} />
-              {t('common.members', {
-                context: 'title',
-              })}
-            </Menu.Item>
-          )}
           {canUseLabels && (
             <Menu.Item className={styles.menuItem} onClick={handleLabelsClick}>
               <Icon name="bookmark outline" className={styles.menuItemIcon} />
               {t('common.labels', {
-                context: 'title',
-              })}
-            </Menu.Item>
-          )}
-          {card.type !== CardTypes.PROJECT && canUseMembers && (
-            <Menu.Item className={styles.menuItem} onClick={handleMembersClick}>
-              <Icon name="user outline" className={styles.menuItemIcon} />
-              {t('common.members', {
-                context: 'title',
-              })}
-            </Menu.Item>
-          )}
-          {card.type === CardTypes.PROJECT && canEditDueDate && (
-            <Menu.Item className={styles.menuItem} onClick={handleEditDueDateClick}>
-              <Icon name="calendar check outline" className={styles.menuItemIcon} />
-              {t('action.editDueDate', {
-                context: 'title',
-              })}
-            </Menu.Item>
-          )}
-          {card.type === CardTypes.PROJECT && canEditStopwatch && (
-            <Menu.Item className={styles.menuItem} onClick={handleEditStopwatchClick}>
-              <Icon name="clock outline" className={styles.menuItemIcon} />
-              {t('action.editStopwatch', {
                 context: 'title',
               })}
             </Menu.Item>

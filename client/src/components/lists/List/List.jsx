@@ -109,7 +109,7 @@ const List = React.memo(({ id, index }) => {
   }, [list.isPersisted, canEdit]);
 
   const handleAddCardClick = useCallback(() => {
-    setAddCardPosition(AddCardPositions.BOTTOM);
+    setAddCardPosition(AddCardPositions.TOP);
   }, []);
 
   const handleAddCardClose = useCallback(() => {
@@ -254,9 +254,6 @@ const List = React.memo(({ id, index }) => {
                   )
                 ))}
             </div>
-            <div ref={cardsWrapperRef} className={styles.cardsInnerWrapper}>
-              <div className={styles.cardsOuterWrapper}>{cardsNode}</div>
-            </div>
             {!addCardPosition && canAddCard && (
               <div className={styles.addCardButtonWrapper}>
                 <button
@@ -286,6 +283,9 @@ const List = React.memo(({ id, index }) => {
                 )}
               </div>
             )}
+            <div ref={cardsWrapperRef} className={styles.cardsInnerWrapper}>
+              <div className={styles.cardsOuterWrapper}>{cardsNode}</div>
+            </div>
           </div>
         </div>
       )}
