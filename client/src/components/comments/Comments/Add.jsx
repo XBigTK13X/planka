@@ -3,16 +3,20 @@
  * Licensed under the Fair Use License: https://github.com/plankanban/planka/blob/master/LICENSE.md
  */
 
-import React, { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import keyBy from 'lodash/keyBy';
+import React, { useCallback, useState, useRef, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import TextareaAutosize from 'react-textarea-autosize';
-import { Button, Form, TextArea } from 'semantic-ui-react';
+import { Mention, MentionsInput } from 'react-mentions';
+import { Button, Form } from 'semantic-ui-react';
 import { useClickAwayListener, useDidUpdate, useToggle } from '../../../lib/hooks';
 
+import selectors from '../../../selectors';
 import entryActions from '../../../entry-actions';
 import { useEscapeInterceptor, useForm, useNestedRef } from '../../../hooks';
+import { isUsernameChar, mentionTextToMarkup } from '../../../utils/mentions';
 import { isModifierKeyPressed } from '../../../utils/event-helpers';
+import UserAvatar from '../../users/UserAvatar';
 
 import styles from './Add.module.scss';
 
@@ -21,35 +25,53 @@ const DEFAULT_DATA = {
 };
 
 const Add = React.memo(() => {
+  const boardMemberships = useSelector(selectors.selectMembershipsForCurrentBoard);
+
   const dispatch = useDispatch();
   const [t] = useTranslation();
+  const [data, , setData] = useForm(DEFAULT_DATA);
   const [isOpened, setIsOpened] = useState(false);
-  const [data, handleFieldChange, setData] = useForm(DEFAULT_DATA);
   const [selectTextFieldState, selectTextField] = useToggle();
 
-  const [textFieldRef, handleTextFieldRef] = useNestedRef();
+  const textFieldRef = useRef(null);
+  const textMentionsRef = useRef(null);
+  const textInputRef = useRef(null);
   const [buttonRef, handleButtonRef] = useNestedRef();
+
+  const userByUsername = useMemo(
+    () =>
+      keyBy(
+        boardMemberships.flatMap(({ user }) => (user.username ? user : [])),
+        'username',
+      ),
+    [boardMemberships],
+  );
 
   const submit = useCallback(() => {
     const cleanData = {
       ...data,
-      text: data.text.trim(),
+      text: mentionTextToMarkup(data.text.trim(), userByUsername),
     };
 
     if (!cleanData.text) {
-      textFieldRef.current.select();
+      textInputRef.current.select();
       return;
     }
 
     dispatch(entryActions.createCommentInCurrentCard(cleanData));
     setData(DEFAULT_DATA);
     selectTextField();
-  }, [dispatch, data, setData, selectTextField, textFieldRef]);
+  }, [dispatch, data, setData, selectTextField, userByUsername]);
 
   const handleEscape = useCallback(() => {
+    if (textMentionsRef.current.isOpened()) {
+      textMentionsRef.current.clearSuggestions();
+      return;
+    }
+
     setIsOpened(false);
-    textFieldRef.current.blur();
-  }, [textFieldRef]);
+    textInputRef.current.blur();
+  }, []);
 
   const [activateEscapeInterceptor, deactivateEscapeInterceptor] =
     useEscapeInterceptor(handleEscape);
@@ -61,6 +83,15 @@ const Add = React.memo(() => {
   const handleFieldFocus = useCallback(() => {
     setIsOpened(true);
   }, []);
+
+  const handleFieldChange = useCallback(
+    (_, text) => {
+      setData({
+        text: !isUsernameChar(text.slice(-1)) ? mentionTextToMarkup(text, userByUsername) : text,
+      });
+    },
+    [setData, userByUsername],
+  );
 
   const handleFieldKeyDown = useCallback(
     (event) => {
@@ -76,13 +107,23 @@ const Add = React.memo(() => {
   }, []);
 
   const handleClickAwayCancel = useCallback(() => {
-    textFieldRef.current.focus();
-  }, [textFieldRef]);
+    textInputRef.current.focus();
+  }, []);
 
   const clickAwayProps = useClickAwayListener(
     [textFieldRef, buttonRef],
     handleAwayClick,
     handleClickAwayCancel,
+  );
+
+  const suggestionRenderer = useCallback(
+    (entry, _, highlightedDisplay) => (
+      <div className={styles.suggestion}>
+        <UserAvatar id={entry.id} size="tiny" />
+        {highlightedDisplay}
+      </div>
+    ),
+    [],
   );
 
   useDidUpdate(() => {
@@ -94,27 +135,45 @@ const Add = React.memo(() => {
   }, [isOpened]);
 
   useDidUpdate(() => {
-    textFieldRef.current.focus();
+    textInputRef.current.focus();
   }, [selectTextFieldState]);
 
   return (
     <Form onSubmit={handleSubmit}>
-      <TextArea
-        {...clickAwayProps} // eslint-disable-line react/jsx-props-no-spreading
-        ref={handleTextFieldRef}
-        as={TextareaAutosize}
-        name="text"
-        value={data.text}
-        placeholder={t('common.writeComment')}
-        maxLength={1048576}
-        minRows={isOpened ? 3 : 1}
-        spellCheck={false}
-        className={styles.field}
-        onFocus={handleFieldFocus}
-        onKeyDown={handleFieldKeyDown}
-        onChange={handleFieldChange}
-      />
-      {isOpened && (
+      <div ref={textFieldRef} className={styles.field}>
+        <MentionsInput
+          {...clickAwayProps} // eslint-disable-line react/jsx-props-no-spreading
+          allowSpaceInQuery
+          allowSuggestionsAboveCursor
+          ref={textMentionsRef}
+          inputRef={textInputRef}
+          value={data.text}
+          placeholder={t('common.writeComment')}
+          maxLength={1048576}
+          rows={isOpened ? 3 : 1}
+          className="mentions-input"
+          style={{
+            control: {
+              minHeight: isOpened ? '79px' : '37px',
+            },
+          }}
+          onFocus={handleFieldFocus}
+          onChange={handleFieldChange}
+          onKeyDown={handleFieldKeyDown}
+        >
+          <Mention
+            appendSpaceOnAdd
+            data={boardMemberships.map(({ user }) => ({
+              id: user.id,
+              display: user.username || user.name,
+            }))}
+            displayTransform={(_, display) => `@${display}`}
+            renderSuggestion={suggestionRenderer}
+            className={styles.mention}
+          />
+        </MentionsInput>
+      </div>
+      {(isOpened || data.text.length > 0) && (
         <div className={styles.controls}>
           <Button
             {...clickAwayProps} // eslint-disable-line react/jsx-props-no-spreading

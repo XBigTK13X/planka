@@ -2,6 +2,7 @@ export default {
   translation: {
     common: {
       activeUsersLimitReached: 'Active users limit reached',
+      adminLoginRequiredToInitializeInstance: 'Admin login required to initialize instance',
       emailAlreadyInUse: 'E-mail already in use',
       emailOrUsername: 'E-mail or username',
       invalidCredentials: 'Invalid credentials',
@@ -12,14 +13,20 @@ export default {
       or: 'Or',
       pageNotFound_title: 'Page Not Found',
       password: 'Password',
-      poweredByPlanka: 'Powered by PLANKA',
+      poweredByPlanka: 'Powered by <1>PLANKA</1>',
       serverConnectionFailed: 'Server connection failed',
       unknownError: 'Unknown error, try again later',
-      usernameAlreadyInUse: 'Username already in use',
       useSingleSignOn: 'Use single sign-on',
+      usernameAlreadyInUse: 'Username already in use',
+      whoops_title: 'Whoops!',
     },
 
     action: {
+      cancelAndClose: 'Cancel and close',
+      continue: 'Continue',
+      debugSso: 'Debug SSO',
+      goBack: 'Go back',
+      goHome: 'Go home',
       logIn: 'Log in',
       logInWithSso: 'Log in with SSO',
     },

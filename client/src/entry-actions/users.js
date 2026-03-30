@@ -5,6 +5,11 @@
 
 import EntryActionTypes from '../constants/EntryActionTypes';
 
+const handleUsersReset = () => ({
+  type: EntryActionTypes.USERS_RESET_HANDLE,
+  payload: {},
+});
+
 const createUser = (data) => ({
   type: EntryActionTypes.USER_CREATE,
   payload: {
@@ -141,6 +146,27 @@ const updateCurrentUserAvatar = (data) => ({
   },
 });
 
+const createUserApiKey = (id) => ({
+  type: EntryActionTypes.USER_API_KEY_CREATE,
+  payload: {
+    id,
+  },
+});
+
+const deleteUserApiKey = (id) => ({
+  type: EntryActionTypes.USER_API_KEY_DELETE,
+  payload: {
+    id,
+  },
+});
+
+const clearUserApiKeyValue = (id) => ({
+  type: EntryActionTypes.USER_API_KEY_VALUE_CLEAR,
+  payload: {
+    id,
+  },
+});
+
 const deleteUser = (id) => ({
   type: EntryActionTypes.USER_DELETE,
   payload: {
@@ -225,6 +251,7 @@ const removeUserFromFilterInCurrentBoard = (id) => ({
 });
 
 export default {
+  handleUsersReset,
   createUser,
   handleUserCreate,
   clearUserCreateError,
@@ -245,6 +272,9 @@ export default {
   clearUserUsernameUpdateError,
   clearCurrentUserUsernameUpdateError,
   updateCurrentUserAvatar,
+  createUserApiKey,
+  deleteUserApiKey,
+  clearUserApiKeyValue,
   deleteUser,
   handleUserDelete,
   addUserToCard,
