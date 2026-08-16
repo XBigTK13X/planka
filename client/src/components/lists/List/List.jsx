@@ -108,8 +108,8 @@ const List = React.memo(({ id, index }) => {
     }
   }, [list.isPersisted, canEdit]);
 
-  const handleAddCardClick = useCallback(() => {
-    setAddCardPosition(AddCardPositions.TOP);
+  const handleAddCardClick = useCallback((position) => {
+    setAddCardPosition(position);
   }, []);
 
   const handleAddCardClose = useCallback(() => {
@@ -264,7 +264,7 @@ const List = React.memo(({ id, index }) => {
                     list.color &&
                       globalStyles[`background${upperFirst(camelCase(list.color))}Soft`],
                   )}
-                  onClick={handleAddCardClick}
+                  onClick={()=>{handleAddCardClick(AddCardPositions.TOP)}}
                 >
                   <PlusMathIcon className={styles.addCardButtonIcon} />
                   <span className={styles.addCardButtonText}>
@@ -286,6 +286,35 @@ const List = React.memo(({ id, index }) => {
             <div ref={cardsWrapperRef} className={styles.cardsInnerWrapper}>
               <div className={styles.cardsOuterWrapper}>{cardsNode}</div>
             </div>
+                        {!addCardPosition && canAddCard && (
+              <div className={styles.addCardButtonWrapper}>
+                <button
+                  type="button"
+                  disabled={!list.isPersisted}
+                  className={classNames(
+                    styles.addCardButton,
+                    list.color &&
+                      globalStyles[`background${upperFirst(camelCase(list.color))}Soft`],
+                  )}
+                  onClick={()=>{handleAddCardClick(AddCardPositions.BOTTOM)}}
+                >
+                  <PlusMathIcon className={styles.addCardButtonIcon} />
+                  <span className={styles.addCardButtonText}>
+                    {cardIds.length > 0 ? t('action.addAnotherCard') : t('action.addCard')}
+                  </span>
+                </button>
+                {clipboard && canPasteCard && (
+                  <button
+                    type="button"
+                    disabled={!list.isPersisted}
+                    className={classNames(styles.addCardButton, styles.paste)}
+                    onClick={handlePasteCardClick}
+                  >
+                    <Icon name="paste" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

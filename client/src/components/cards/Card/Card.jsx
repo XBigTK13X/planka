@@ -130,7 +130,7 @@ const Card = React.memo(({ id, isInline }) => {
 
   return (
     <div
-      className={classNames(styles.wrapper, isHighlightedAsRecent && styles.wrapperRecent, 'card')}
+      className={classNames(styles.wrapper, 'card')}
     >
       {card.isPersisted ? (
         <>
